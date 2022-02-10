@@ -2,6 +2,8 @@
 node_modules
 /dist
 
+# potentially sensitive info
+/pass
 
 # local env files
 .env.local

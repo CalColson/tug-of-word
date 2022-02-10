@@ -49,6 +49,10 @@ export default {
 #header-row .more-link {
   margin-left: auto;
 }
+#header-row .more-link:hover {
+  color: $accent-color;
+  cursor: pointer;
+}
 .row {
   display: flex;
   align-items: center;
@@ -60,7 +64,7 @@ export default {
   background-color: $bg-dark;
 }
 .row.light {
-  background-color: $bg-lighter;
+  background-color: $bg-light;
 }
 .row .rank {
   flex: 1;

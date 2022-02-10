@@ -63,4 +63,11 @@ export default {
   font-size: $text-size;
   font-weight: 400;
 }
+
+// override vue-modal default style
+.vm--modal {
+  background-color: $bg-dark !important;
+  color: $text-color;
+  cursor: default;
+}
 </style>

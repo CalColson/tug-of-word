@@ -1,0 +1,7 @@
+Ideas to implement (much) later:
+
+1. show possible completed word on miss
+2. have a post-game screen with all the completed words, and a few possible words for 'missed words'.
+  - link to definitions for these words
+3. ramp up the speed over time so that games do not last forever
+4. create a play-through tutorial

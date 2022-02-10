@@ -1,7 +1,11 @@
 // Colors --------------
 
+$accent-color: #d64f00;
+$transparent-accent-color: rgba(214, 79, 0, 0.3);
+
 // text
 $text-color: #ffffff;
+$text-gray: #999999;
 
 $link-text-color: #3692e7;
 $button-text-color: #cccccc;
@@ -11,8 +15,10 @@ $bg-color: #161512;
 $bg-dark: #282828;
 $bg-light: #3b3b3b;
 $bg-lighter: #646464;
+$bg-success: #629924;
+$bg-failure: #cc3333;
 
-$button-bg-color: #646464;
+$button-bg-color: #444444;
 
 $transparent-mask-bg-color: rgb(38, 36, 33, 0.8);
 

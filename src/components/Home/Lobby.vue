@@ -19,25 +19,25 @@ export default {
   data: function () {
     return {
       lobbyRooms: [
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' }
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
+        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' }
       ]
     }
   }
@@ -65,7 +65,6 @@ export default {
 
   height: 2.5rem;
   padding-inline: 1rem;
-  margin-bottom: 1rem;
 
   font-weight: 600;
 }
@@ -81,6 +80,10 @@ export default {
   height: 2.5rem;
 
   border-bottom: 1px solid $text-color;
+}
+.row:hover {
+  background-color: $transparent-accent-color;
+  cursor: pointer;
 }
 .row .row-item {
   flex: 1;

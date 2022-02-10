@@ -16,6 +16,11 @@ export default {
     ActionButtons,
     Leaderboard,
     Lobby
+  },
+  data: function () {
+    return {
+      db: null
+    }
   }
 }
 </script>

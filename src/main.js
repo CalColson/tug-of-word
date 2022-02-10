@@ -3,7 +3,18 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import { initializeApp } from 'firebase/app'
+import fbConfig from '../pass/FireBaseConfig'
+
+import vmodal from 'vue-js-modal'
+
+// initialize firebase
+initializeApp(fbConfig)
+
 Vue.config.productionTip = false
+
+// plugins
+Vue.use(vmodal, { dialog: true })
 
 new Vue({
   router,

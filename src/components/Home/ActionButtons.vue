@@ -1,16 +1,16 @@
 <template lang="pug">
 #action-buttons
   .action-button(@click='createGame') CREATE A GAME
-    modal(name='example')
+    modal(name='create-game')
       .modal-content
         #time-control
           #time-control-label seconds per side
-          input#time-control-input(v-model='secondsPerSide' type="number", min="1", max="3")
+          input#time-control-input(v-model='secondsPerSide' type="number", min="5", max="30")
         #choose-mode
           #casual-button.mode-button(:class='{selected: !isRated}', @click='onCasualButtonClick') casual
           #rated-button.mode-button(:class='{selected: isRated}', @click='onRatedButtonClick') rated
         #action-section
-          #cancel-button.action-section-button(@click='$modal.hide("example")') cancel
+          #cancel-button.action-section-button(@click='$modal.hide("create-game")') cancel
           #confirm-button.action-section-button(@click='joinLobby') join lobby
   .action-button PLAY WITH A FRIEND
   .action-button PLAY WITH THE COMPUTER
@@ -21,9 +21,6 @@ import { getDatabase, ref, set } from 'firebase/database'
 
 export default {
   name: 'ActionButtons',
-  created () {
-    this.db = getDatabase()
-  },
   data: function () {
     return {
       db: null,
@@ -32,9 +29,12 @@ export default {
       isRated: true
     }
   },
+  created () {
+    this.db = getDatabase()
+  },
   methods: {
     createGame () {
-      this.$modal.show('example')
+      this.$modal.show('create-game')
     },
     onCasualButtonClick () {
       if (this.isRated) this.isRated = false
@@ -42,12 +42,15 @@ export default {
     onRatedButtonClick () {
       if (!this.isRated) this.isRated = true
     },
+    // TODO: Create account and usernames
     joinLobby () {
       set(ref(this.db, 'lobby/users/cosmo'), {
         name: 'cosmo',
         rating: '1337',
         time: this.secondsPerSide,
         isRated: this.isRated
+      }).then(() => {
+        this.$modal.hide('create-game')
       })
     }
   }

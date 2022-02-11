@@ -7,39 +7,38 @@
       .heading.time-header Time
       .heading.mode-header Mode
     .row(v-for='(room, i) in lobbyRooms' :key='i')
-      .row-item.player {{room.player}}
+      .row-item.player {{room.name}}
       .row-item.rating {{room.rating}}
       .row-item.time {{room.time}}
-      .row-item.mode {{room.mode}}
+      .row-item.mode {{room.isRated ? 'Rated': 'Casual'}}
 </template>
 
 <script>
+import { getDatabase, ref, onChildAdded, onChildChanged } from 'firebase/database'
+
 export default {
   name: 'Lobby',
   data: function () {
     return {
-      lobbyRooms: [
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' },
-        // { player: 'Cosmosis', rating: '1200', time: '20', mode: 'Casual' }
-      ]
+      db: null,
+      lobbyRooms: []
     }
+  },
+  created () {
+    this.db = getDatabase()
+  },
+  mounted () {
+    const lobbyUsersRef = ref(this.db, 'lobby/users')
+
+    onChildAdded(lobbyUsersRef, (data) => {
+      this.lobbyRooms.push(data.val())
+    })
+    onChildChanged(lobbyUsersRef, (data) => {
+      this.lobbyRooms = this.lobbyRooms.map((room) => {
+        if (data.val().name === room.name) return data.val()
+        else return room
+      })
+    })
   }
 }
 </script>

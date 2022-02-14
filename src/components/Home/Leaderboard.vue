@@ -44,13 +44,13 @@ export default {
 
   padding-inline: 1rem;
 
-  background-color: $bg-light;
+  background-color: $darker-gray;
 }
 #header-row .more-link {
   margin-left: auto;
 }
 #header-row .more-link:hover {
-  color: $accent-color;
+  color: $accent;
   cursor: pointer;
 }
 .row {
@@ -61,10 +61,10 @@ export default {
   padding-inline: 1rem;
 }
 .row.dark {
-  background-color: $bg-dark;
+  background-color: $darkest-gray;
 }
 .row.light {
-  background-color: $bg-light;
+  background-color: $darker-gray;
 }
 .row .rank {
   flex: 1;

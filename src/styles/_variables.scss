@@ -1,28 +1,34 @@
 // Colors --------------
 
-$accent-color: #d64f00;
-$transparent-accent-color: rgba(214, 79, 0, 0.3);
+$accent: #d64f00;
 
-// text
-$text-color: #ffffff;
-$text-gray: #999999;
+$success: #629924;
+$failure: #cc3333;
+$info: #3692e7;
 
-$link-text-color: #3692e7;
-$button-text-color: #cccccc;
+$white: #ffffff;
 
-// backgrounds
-$bg-color: #161512;
-$bg-dark: #282828;
-$bg-light: #3b3b3b;
-$bg-lighter: #646464;
-$bg-success: #629924;
-$bg-failure: #cc3333;
+$lightest-gray: #cccccc;
+$lighter-gray: #bababa;
+$light-gray: #999999;
+$gray: #646464;
+$dark-gray: #444444;
+$darker-gray: #3b3b3b;
+$darkest-gray: #282828;
 
-$button-bg-color: #444444;
+$black: #161512;
 
-$transparent-mask-bg-color: rgb(38, 36, 33, 0.8);
+// transparent colors
+
+$transparent-accent: #d64f004d;
+$transparent-gray: #262421cc;
 
 // Sizes --------------
 
 // text
-$text-size: 16px;
+$xx-large: 3rem;
+$x-large: 2rem;
+$large: 1.5rem;
+$medium: 1rem;
+$small: 0.75rem;
+$x-small: 0.5rem;

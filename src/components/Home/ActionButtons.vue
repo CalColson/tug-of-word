@@ -73,15 +73,15 @@ export default {
 
   height: 30%;
 
-  color: $text-gray;
+  color: $light-gray;
   border-radius: 6px;
-  background-color: $button-bg-color;
+  background-color: $dark-gray;
 
   cursor: pointer;
 }
 .action-button:hover {
   color: #ffffff;
-  background-color: $bg-lighter;
+  background-color: $gray;
 }
 
 .modal-content {
@@ -115,13 +115,13 @@ export default {
 
   padding-block: 0.5rem;
 
-  background-color: $bg-light;
+  background-color: $darker-gray;
   text-shadow: 1px 1px black;
 
   cursor: pointer;
 }
 #choose-mode .mode-button.selected {
-  background-color: $bg-success;
+  background-color: $success;
 }
 #casual-button {
   border-start-start-radius: 6px;
@@ -140,7 +140,7 @@ export default {
   align-items: center;
   gap: 25%;
 
-  border-top: 1px solid $text-color;
+  border-top: 1px solid $white;
 }
 #action-section .action-section-button {
   width: 25%;
@@ -151,9 +151,9 @@ export default {
   cursor: pointer;
 }
 #action-section #cancel-button {
-  background-color: $bg-failure;
+  background-color: $failure;
 }
 #action-section #confirm-button {
-  background-color: $bg-success;
+  background-color: $success;
 }
 </style>

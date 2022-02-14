@@ -56,7 +56,7 @@ export default {
   padding-top: 1rem;
   overflow-y: auto;
 
-  background-color: $transparent-mask-bg-color;
+  background-color: $transparent-gray;
 }
 #header-row {
   display: flex;
@@ -78,10 +78,10 @@ export default {
   padding-inline: 1rem;
   height: 2.5rem;
 
-  border-bottom: 1px solid $text-color;
+  border-bottom: 1px solid $white;
 }
 .row:hover {
-  background-color: $transparent-accent-color;
+  background-color: $transparent-accent;
   cursor: pointer;
 }
 .row .row-item {

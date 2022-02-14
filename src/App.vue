@@ -17,6 +17,11 @@ export default {
 
 <style lang="scss">
 // fonts
+
+// google fonts
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+// local downloads
 @font-face {
   font-family: 'Noto Sans';
   src: local('Noto Sans'), url('./assets/fonts/noto-sans/NotoSans-Light.ttf');
@@ -47,27 +52,27 @@ export default {
   width: 1rem;
 }
 ::-webkit-scrollbar-track {
-  background: $bg-light;
+  background: $darker-gray;
 }
 ::-webkit-scrollbar-thumb {
-  background: $bg-lighter;
+  background: $gray;
 }
 
 #app {
   min-height: 100vh;
 
-  color: $text-color;
-  background: $bg-color;
+  color: $white;
+  background: $black;
 
   font-family: 'Noto Sans', sans-serif;
-  font-size: $text-size;
+  font-size: $medium;
   font-weight: 400;
 }
 
 // override vue-modal default style
 .vm--modal {
-  background-color: $bg-dark !important;
-  color: $text-color;
+  background-color: $darkest-gray !important;
+  color: $white;
   cursor: default;
 }
 </style>

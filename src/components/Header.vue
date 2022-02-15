@@ -1,13 +1,13 @@
 <template lang="pug">
 #header
   nav#header-nav
-    #logo tug of word
+    router-link#logo(to='/') tug of word
     .header-link PLAY
     .header-link RULES
     .header-link ABOUT
     #sign-in-link(@click='onSignInClicked') SIGN IN
-      modal#sign-in-modal(name='sign-in' height='75%')
-        form#sign-in-form
+      modal#sign-in-modal(:name='signInModalName' height='75%')
+        form#sign-in-form(@submit.prevent='onSubmit')
           #sign-in-modal-heading Sign in
           .input-group
             label(for="userNameOrEmailInput") User name or email:
@@ -18,8 +18,8 @@
             br
             input#password(:class='{invalid: !isPasswordValid}' v-model='password' @keyup='updateValidity' type="password")
           #action-area
-            button SIGN IN
-            #register-link No account? Register.
+            button.form-button SIGN IN
+            #register-link(to='/register' @click='onRegisterClicked') No account? Register.
 
 </template>
 
@@ -28,6 +28,8 @@ export default {
   name: 'Header',
   data: function () {
     return {
+      signInModalName: 'sign-in',
+
       userNameOrEmail: '',
       password: '',
 
@@ -37,11 +39,16 @@ export default {
     }
   },
   mounted () {
-    this.onSignInClicked()
+    // this.onSignInClicked()
   },
   methods: {
     onSignInClicked () {
-      this.$modal.show('sign-in')
+      this.$modal.show(this.signInModalName)
+
+      // focus first input after a short wait
+      setTimeout(() => {
+        document.getElementById('userNameOrEmailInput').focus()
+      }, 500)
     },
     updateValidity () {
       this.checkNameOrEmail()
@@ -78,6 +85,19 @@ export default {
         // is appropriate minimum length
         this.isPasswordValid = true
       } else this.isPasswordValid = false
+    },
+
+    onSubmit () {
+      console.log('signing-up')
+    },
+
+    onRegisterClicked () {
+      this.cleanup()
+      this.$router.push('./register')
+    },
+
+    cleanup () {
+      this.$modal.hide(this.signInModalName)
     }
   }
 }
@@ -99,6 +119,9 @@ export default {
 }
 #header-nav #logo {
   font-size: 32px;
+
+  color: $white;
+  text-decoration: none;
   cursor: pointer;
 }
 #header-nav #logo:hover {
@@ -135,8 +158,7 @@ export default {
   justify-items: center;
 
   height: 100%;
-  padding-inline: 12.5%;
-  padding-block: 7.5%;
+  padding: 7.5% 12.5%;
 
   color: $lighter-gray;
   font-size: $medium;
@@ -144,50 +166,17 @@ export default {
 #sign-in-form #sign-in-modal-heading {
   flex: 1;
 
-  font-size: 3rem;
   font-family: 'Roboto', sans-serif;
+  font-size: $xx-large;
 }
 #sign-in-form .input-group {
   flex: 1;
-
-  input {
-    width: 100%;
-    height: 2.5rem;
-
-    margin-top: 10px;
-    padding-inline: 13.25px;
-
-    color: $lighter-gray;
-    background-color: $darkest-gray;
-
-    border: 1px solid $dark-gray;
-    border-radius: 3px;
-
-    &.invalid {
-      border: 1px solid $failure;
-    }
-  }
 }
 #sign-in-form #action-area {
   flex: 1;
 
   display: flex;
   flex-direction: column;
-
-  button {
-    width: 100%;
-    height: 3rem;
-
-    color: $white;
-    font-size: $medium;
-    font-weight: 600;
-    background-color: $info;
-    border-radius: 3px;
-    border: none;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.224);
-
-    cursor: pointer;
-  }
 
   #register-link {
     margin-top: auto;

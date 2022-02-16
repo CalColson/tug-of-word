@@ -31,9 +31,7 @@ export default {
     const lobbyUsersRef = ref(this.db, 'lobby/users')
 
     onChildAdded(lobbyUsersRef, (data) => {
-      const room = { ...data.val(), name: data.key }
-      // console.log(room)
-      this.lobbyRooms.push(room)
+      this.lobbyRooms.push(data.val())
     })
     onChildChanged(lobbyUsersRef, (data) => {
       this.lobbyRooms = this.lobbyRooms.map((room) => {

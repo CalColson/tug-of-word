@@ -135,7 +135,6 @@ export default {
 
     onSubmit () {
       if (this.isNameOrEmailValid && this.isPasswordValid) {
-        // TODO: find email from username if not already email
         const onSuccessfulSignIn = (userCredential) => {
           // console.log(userCredential)
           this.$modal.hide('sign-in')

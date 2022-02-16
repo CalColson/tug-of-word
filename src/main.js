@@ -4,7 +4,6 @@ import router from './router'
 import store from './store'
 
 import { initializeApp } from 'firebase/app'
-// import { initializeAuth } from 'firebase/auth'
 import fbConfig from '../pass/FireBaseConfig'
 
 import vmodal from 'vue-js-modal'

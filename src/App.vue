@@ -1,16 +1,29 @@
 <template lang="pug">
 #app
-  <Header />
+  <Header :user='user'/>
   router-view
 </template>
 
 <script>
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+
 import Header from './components/Header.vue'
 
 export default {
   name: 'App',
   components: {
     Header
+  },
+  data: function () {
+    return {
+      user: null
+    }
+  },
+  created () {
+    const auth = getAuth()
+    onAuthStateChanged(auth, (user) => {
+      this.user = user
+    })
   }
 }
 </script>

@@ -8,6 +8,7 @@
           .input-group
             label(for="password") Password:
             input#password(:class='{invalid: !isPasswordValid}' v-model='password' @keyup='updateValidity' type="password")
+            small#passwordNote Password must be at least 6 characters long
           .input-group
             label(for="email") Email:
             input#email(:class='{invalid: !isEmailValid}' v-model='email' @keyup='updateValidity' type="email")
@@ -15,6 +16,9 @@
 </template>
 
 <script>
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
+import { getDatabase, ref, set } from 'firebase/database'
+
 export default {
   name: 'Register',
   data: function () {
@@ -32,6 +36,13 @@ export default {
   computed: {
     formIsValid () {
       return this.isUserNameValid && this.isPasswordValid && this.isEmailValid
+    },
+    cleanUserInfo () {
+      return {
+        userName: this.userName.trim(),
+        password: this.password.trim(),
+        email: this.email.trim()
+      }
     }
   },
   methods: {
@@ -54,6 +65,26 @@ export default {
     onSubmit () {
       if (this.formIsValid) {
         console.log('registering')
+        const auth = getAuth()
+
+        createUserWithEmailAndPassword(auth, this.cleanUserInfo.email, this.cleanUserInfo.password)
+          .then((userCredential) => {
+            // console.log(userCredential)
+
+            const db = getDatabase()
+            set(ref(db, `registeredUsers/${this.cleanUserInfo.userName}`), {
+              email: userCredential.user.email,
+              rating: 1200
+            }).then(() => {
+              this.$router.push('/')
+            }).catch((err) => console.log(err))
+          }).catch((err) => {
+            // TODO: Handle errors
+            console.log(err)
+          })
+      } else {
+        // TODO: Handle showing user how to correct
+        console.log('invalid form')
       }
     }
   }

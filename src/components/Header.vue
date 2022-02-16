@@ -5,7 +5,8 @@
     .header-link PLAY
     .header-link RULES
     .header-link ABOUT
-    #sign-in-link(@click='onSignInClicked') SIGN IN
+    //- TODO: fix this to show username and not email, as well as change styling... just do a completely different element with a v-if v-else
+    #sign-in-link(@click='onSignInClicked') {{user ? user.email : 'SIGN IN'}}
       modal#sign-in-modal(:name='signInModalName' height='75%')
         form#sign-in-form(@submit.prevent='onSubmit')
           #sign-in-modal-heading Sign in
@@ -24,10 +25,17 @@
 </template>
 
 <script>
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+
 export default {
   name: 'Header',
+  props: {
+    user: Object
+  },
   data: function () {
     return {
+      auth: null,
+
       signInModalName: 'sign-in',
 
       userNameOrEmail: '',
@@ -38,17 +46,26 @@ export default {
       isPasswordValid: false
     }
   },
+  created () {
+    this.auth = getAuth()
+  },
   mounted () {
     // this.onSignInClicked()
   },
   methods: {
     onSignInClicked () {
+      // TODO: Refactor this into its own method with its own button
+      if (this.user) {
+        signOut(this.auth)
+        return
+      }
+
       this.$modal.show(this.signInModalName)
 
       // focus first input after a short wait
       setTimeout(() => {
         document.getElementById('userNameOrEmailInput').focus()
-      }, 500)
+      }, 300)
     },
     updateValidity () {
       this.checkNameOrEmail()
@@ -88,7 +105,19 @@ export default {
     },
 
     onSubmit () {
-      console.log('signing-up')
+      if (this.isNameOrEmailValid && this.isPasswordValid) {
+        signInWithEmailAndPassword(this.auth, this.userNameOrEmail.trim(), this.password)
+          .then((userCredential) => {
+            // console.log(userCredential)
+            this.$modal.hide('sign-in')
+          }).catch((err) => {
+            // TODO: error handling
+            console.error(err)
+          })
+      } else {
+        // TODO: Handle showing user what they did incorrectly
+        console.error('invalid login')
+      }
     },
 
     onRegisterClicked () {

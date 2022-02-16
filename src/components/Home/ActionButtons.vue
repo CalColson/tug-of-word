@@ -19,6 +19,8 @@
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
 
+import { nanoid } from 'nanoid'
+
 export default {
   name: 'ActionButtons',
   data: function () {
@@ -42,11 +44,19 @@ export default {
     onRatedButtonClick () {
       if (!this.isRated) this.isRated = true
     },
-    // TODO: Create account and usernames
+    // TODO: determine when, in which exact cases, to remove the room from the lobby in the rtdb
     joinLobby () {
-      set(ref(this.db, 'lobby/users/cosmo'), {
-        name: 'cosmo',
-        rating: '1337',
+      let name = 'anon-' + nanoid(5)
+      let rating = 1200
+      const user = this.$store.state.user
+      if (user) {
+        name = user.name
+        rating = user.rating
+      }
+
+      set(ref(this.db, `lobby/users/${name}`), {
+        name: name,
+        rating: rating,
         time: this.secondsPerSide,
         isRated: this.isRated
       }).then(() => {

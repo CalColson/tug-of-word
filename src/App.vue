@@ -6,6 +6,7 @@
 
 <script>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { getDatabase, ref, query, orderByKey, equalTo, onValue } from 'firebase/database'
 
 import Header from './components/Header.vue'
 
@@ -22,7 +23,28 @@ export default {
   created () {
     const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
+      // user data to pass into header props
       this.user = user
+
+      // set store for user
+      if (user) {
+        const db = getDatabase()
+        const usersQuery = query(ref(db, '/registeredUsers'),
+          orderByKey(), equalTo(user.displayName))
+
+        onValue(usersQuery, (snapshot) => {
+          if (snapshot.val()) {
+            this.$store.commit('setUser', {
+              ...snapshot.val()[user.displayName],
+              name: user.displayName
+            })
+            // console.log(this.$store.state.user)
+          }
+        })
+      } else {
+        this.$store.commit('setUser', null)
+        // console.log(this.$store.state.user)
+      }
     })
   }
 }

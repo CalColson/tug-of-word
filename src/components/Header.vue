@@ -47,7 +47,7 @@ export default {
     return {
       auth: null,
 
-      isUsernameDropdownActive: true,
+      isUsernameDropdownActive: false,
       outsideDropdownClickListener: null,
 
       signInModalName: 'sign-in',

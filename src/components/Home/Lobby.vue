@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { getDatabase, ref, onChildAdded, onChildChanged } from 'firebase/database'
+import { getDatabase, ref, onChildAdded, onChildChanged, onChildRemoved } from 'firebase/database'
 
 export default {
   name: 'Lobby',
@@ -38,6 +38,9 @@ export default {
         if (data.val().name === room.name) return data.val()
         else return room
       })
+    })
+    onChildRemoved(lobbyUsersRef, (data) => {
+      this.lobbyRooms = this.lobbyRooms.filter((room) => data.val().name !== room.name)
     })
   }
 }

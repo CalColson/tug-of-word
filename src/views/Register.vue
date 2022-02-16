@@ -1,22 +1,30 @@
 <template lang='pug'>
 #register
   form#register-form(@submit.prevent='onSubmit')
-          .heading Register
-          .input-group
-            label(for="userNameInput") User name
-            input#userNameInput(:class='{invalid: !isUserNameValid}' v-model='userName' @keyup='updateValidity' type="text" autofocus)
-          .input-group
-            label(for="password") Password:
-            input#password(:class='{invalid: !isPasswordValid}' v-model='password' @keyup='updateValidity' type="password")
-            small#passwordNote Password must be at least 6 characters long
-          .input-group
-            label(for="email") Email:
-            input#email(:class='{invalid: !isEmailValid}' v-model='email' @keyup='updateValidity' type="email")
-          button#register-button.form-button Register
+    .heading-container
+      span.heading Register
+      span#firebaseErrorMessage {{firebaseRegisterErrorMessage}}
+    .input-group
+      div
+        label(for="userNameInput") User name:
+        span.error-message {{userNameErrorMessage}}
+      input#userNameInput(:class='{invalid: !isUserNameValid}' v-model='userName' @keyup='updateValidity' type="text" autofocus)
+    .input-group
+      div
+        label(for="passwordInput") Password:
+        span.error-message {{passwordErrorMessage}}
+      input#passwordInput(:class='{invalid: !isPasswordValid}' v-model='password' @keyup='updateValidity' type="password")
+      small#passwordNote Password must be at least 6 characters long
+    .input-group
+      div
+        label(for="emailInput") Email:
+        span.error-message {{emailErrorMessage}}
+      input#emailInput(:class='{invalid: !isEmailValid}' v-model='email' @keyup='updateValidity' type="email")
+    button#register-button.form-button Register
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { getDatabase, ref, set } from 'firebase/database'
 
 export default {
@@ -25,12 +33,17 @@ export default {
     return {
       userName: '',
       isUserNameValid: false,
+      userNameErrorMessage: '',
 
       password: '',
       isPasswordValid: false,
+      passwordErrorMessage: '',
 
       email: '',
-      isEmailValid: false
+      isEmailValid: false,
+      emailErrorMessage: '',
+
+      firebaseRegisterErrorMessage: ''
     }
   },
   computed: {
@@ -46,10 +59,20 @@ export default {
     }
   },
   methods: {
-    updateValidity () {
+    updateValidity (e) {
+      this.clearErrorMessages(e)
+
       this.checkUserName()
       this.checkPassword()
       this.checkEmail()
+    },
+    clearErrorMessages (e) {
+      this.firebaseRegisterErrorMessage = ''
+
+      // console.log(e.target.id)
+      if (e && e.target.id === 'userNameInput') this.userNameErrorMessage = ''
+      if (e && e.target.id === 'passwordInput') this.passwordErrorMessage = ''
+      if (e && e.target.id === 'emailInput') this.emailErrorMessage = ''
     },
     checkUserName () {
       this.isUserNameValid = this.userName.length >= 3 && !this.userName.includes('@')
@@ -64,13 +87,17 @@ export default {
 
     onSubmit () {
       if (this.formIsValid) {
-        console.log('registering')
+        // console.log('registering')
         const auth = getAuth()
 
         createUserWithEmailAndPassword(auth, this.cleanUserInfo.email, this.cleanUserInfo.password)
           .then((userCredential) => {
-            // console.log(userCredential)
+            // first set display name of the user
+            updateProfile(userCredential.user, {
+              displayName: this.cleanUserInfo.userName
+            }).catch((err) => console.error(err))
 
+            // then create instance of the user in the rtdb
             const db = getDatabase()
             set(ref(db, `registeredUsers/${this.cleanUserInfo.userName}`), {
               email: userCredential.user.email,
@@ -79,12 +106,27 @@ export default {
               this.$router.push('/')
             }).catch((err) => console.log(err))
           }).catch((err) => {
-            // TODO: Handle errors
-            console.log(err)
+            // console.log(err)
+            if (err.code === 'auth/email-already-in-use') {
+              this.firebaseRegisterErrorMessage = 'email is already in use'
+            } else if (err.code === 'auth/invalid-email') {
+              this.firebaseRegisterErrorMessage = 'invalid email'
+            } else if (err.code === 'auth/weak-password') {
+              this.firebaseRegisterErrorMessage = 'password too weak ( < 6 char )'
+            }
           })
       } else {
-        // TODO: Handle showing user how to correct
-        console.log('invalid form')
+        // console.error('invalid form')
+        if (!this.isUserNameValid) {
+          if (this.userName.length < 3) this.userNameErrorMessage = '3 character minimum length'
+          else if (this.userName.includes('@')) this.userNameErrorMessage = 'name cannot include "@"'
+        }
+        if (!this.isPasswordValid) {
+          this.passwordErrorMessage = '6 character minimum length'
+        }
+        if (!this.isEmailValid) {
+          this.emailErrorMessage = 'invalid email'
+        }
       }
     }
   }
@@ -111,9 +153,20 @@ $register-padding-bottom: 20px;
   background-color: $darkest-gray;
   border-radius: 3px;
 
-  .heading {
-    font-family: 'Roboto', sans-serif;
-    font-size: $xx-large;
+  .heading-container {
+    display: flex;
+    .heading {
+      font-family: 'Roboto', sans-serif;
+      font-size: $xx-large;
+    }
+  }
+
+  #firebaseErrorMessage {
+    margin-inline: auto;
+
+    font-size: $large;
+    line-height: $xx-large;
+    color: $failure
   }
 
   .input-group {
@@ -122,6 +175,13 @@ $register-padding-bottom: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    .error-message {
+      margin-left: 1rem;
+
+      font-size: $small;
+      color: $failure
+    }
   }
 
   #register-button {

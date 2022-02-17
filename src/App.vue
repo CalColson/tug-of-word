@@ -26,8 +26,13 @@ export default {
       // user data to pass into header props
       this.user = user
 
+      // if (user) {
+      //   console.log(`${user.email} logged in`)
+      // } else console.log('user logged out')
+
       // set store for user
-      if (user) {
+      // if user has just registered, there will be no displayName set yet. In this case, the store's user is set in Register.vue after account creation
+      if (user && user.displayName) {
         const db = getDatabase()
         const usersQuery = query(ref(db, '/registeredUsers'),
           orderByKey(), equalTo(user.displayName))

@@ -103,6 +103,14 @@ export default {
               email: userCredential.user.email,
               rating: 1200
             }).then(() => {
+              // lastly, set store user, because on initial creation of user, displayName is not yet updated (so it cannot be accessed in the onAuthStateChanged function in App.vue)
+              this.$store.commit('setUser', {
+                name: this.cleanUserInfo.userName,
+                email: userCredential.user.email,
+                rating: 1200
+              })
+
+              // finally go back to home page
               this.$router.push('/')
             }).catch((err) => console.log(err))
           }).catch((err) => {

@@ -45,10 +45,15 @@ export default {
       if (!this.isRated) this.isRated = true
     },
     // TODO: determine when, in which exact cases, to remove the room from the lobby in the rtdb
+    // on logout
+    // on join game
+    // on cancelling game (clicking 'x')
+    // on leaving home (show an alert)
     joinLobby () {
       let name = 'anon-' + nanoid(5)
       let rating = 1200
       const user = this.$store.state.user
+      // console.log(user)
       if (user) {
         name = user.name
         rating = user.rating

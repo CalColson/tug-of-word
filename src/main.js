@@ -9,9 +9,9 @@ import fbConfig from '../pass/FireBaseConfig'
 import vmodal from 'vue-js-modal'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faFlag } from '@fortawesome/free-regular-svg-icons'
+import { faFlag, faXmarkCircle } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faFlag)
+library.add(faFlag, faXmarkCircle)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 // initialize firebase

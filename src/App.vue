@@ -5,8 +5,10 @@
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { getDatabase, ref, query, orderByKey, equalTo, onValue } from 'firebase/database'
+import { getAuth, onAuthStateChanged, signInAnonymously, updateProfile } from 'firebase/auth'
+import { getDatabase, ref, query, orderByKey, equalTo, onValue, set } from 'firebase/database'
+
+import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 
 import Header from './components/Header.vue'
 
@@ -17,10 +19,13 @@ export default {
   },
   data: function () {
     return {
+      db: null,
       user: null
     }
   },
   created () {
+    this.db = getDatabase()
+
     const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
       // user data to pass into header props
@@ -30,11 +35,13 @@ export default {
       //   console.log(`${user.email} logged in`)
       // } else console.log('user logged out')
 
-      // set store for user
-      // if user has just registered, there will be no displayName set yet. In this case, the store's user is set in Register.vue after account creation
+      // if user has just registered, there will be no displayName set yet. In this case, the store's user is set in Register.vue after account creation, or, if anonymous, in the if statement below
       if (user && user.displayName) {
-        const db = getDatabase()
-        const usersQuery = query(ref(db, '/registeredUsers'),
+        // code for both registered and anonymous users
+
+        // set store for user
+        const path = user.isAnonymous ? '/anonymousUsers' : 'registeredUsers'
+        const usersQuery = query(ref(this.db, path),
           orderByKey(), equalTo(user.displayName))
 
         onValue(usersQuery, (snapshot) => {
@@ -44,11 +51,37 @@ export default {
               name: user.displayName
             })
             // console.log(this.$store.state.user)
+          } else {
+            console.error('registered user could not be found in database')
+            console.error('store user could not be set')
           }
+        }, { onlyOnce: true })
+      } else if (!user) {
+        // if there is no user, log-in anonymously
+        const auth = getAuth()
+        signInAnonymously(auth).then((userCredential) => {
+          const randomName = uniqueNamesGenerator({ dictionaries: [adjectives, animals] })
+          // console.log(randomName)
+
+          updateProfile(userCredential.user, { displayName: randomName })
+
+          // TODO: could result in collisions, but we'll worry about this later
+          set(ref(this.db, `/anonymousUsers/${randomName}`), {
+            name: randomName,
+            rating: 1200
+          })
+
+          this.$store.commit('setUser', {
+            name: randomName,
+            rating: 1200
+          })
         })
-      } else {
-        this.$store.commit('setUser', null)
         // console.log(this.$store.state.user)
+      } else {
+        // user has no display name... presumably
+
+        // error is muted for now, because it will always throw between the creation of a user and the update of the profile (thus adding a display name)
+        // console.error('user exists, but has no display name')
       }
     })
   }

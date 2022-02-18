@@ -5,3 +5,8 @@ Ideas to implement (much) later:
   - link to definitions for these words
 3. ramp up the speed over time so that games do not last forever
 4. create a play-through tutorial
+
+Ideas to implement sooner:
+
+Ideas to implement today(ish):
+1. fun anonymous user names -- done!

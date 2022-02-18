@@ -5,7 +5,11 @@
     .header-link PLAY
     .header-link RULES
     .header-link ABOUT
-    #sign-in-link(v-if='!user' @click='onSignInClicked') {{user ? user.email : 'SIGN IN'}}
+    #anon-header-container(v-if='(user && user.isAnonymous && user.displayName)')
+      #anon-name Temporary ID: {{user.displayName}}
+      //- TODO: autofill name in register vuew with the anon display-name
+      router-link.register-link(to='/register') Register now!
+    #sign-in-link(v-if='!user || user.isAnonymous' @click='onSignInClicked') SIGN IN
       modal#sign-in-modal(:name='signInModalName' height='75%' @closed='onModalClosed')
         form#sign-in-form(@submit.prevent='onSubmit')
           #sign-in-modal-heading
@@ -257,6 +261,19 @@ export default {
   color: $accent;
   cursor: pointer;
 }
+
+#anon-header-container {
+  margin-left: auto;
+
+  text-align: center;
+  font-size: $small;
+
+  .register-link {
+    color: $info;
+    cursor: pointer;
+  }
+}
+
 #header-nav #sign-in-link {
   margin-left: auto;
   // to cancel out the padding
@@ -357,8 +374,8 @@ export default {
     position: absolute;
     right: 0;
 
+    width: 100%;
     min-width: 10rem;
-    max-width: 100%;
 
     padding-block: 0.5rem;
 

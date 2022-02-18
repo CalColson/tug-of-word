@@ -6,15 +6,20 @@
       .heading.rating-header Rating
       .heading.time-header Time
       .heading.mode-header Mode
-    .row(v-for='(room, i) in lobbyRooms' :key='i')
+      .xmark-icon-container
+        font-awesome-icon.heading.kill-button-header(icon='fa-regular fa-xmark-circle')
+    .row(v-for='(room, i) in lobbyRooms' :key='i' @click="onRowClicked")
       .row-item.player {{room.name}}
       .row-item.rating {{room.rating}}
       .row-item.time {{room.time}}
       .row-item.mode {{room.isRated ? 'Rated': 'Casual'}}
+      //- TODO: only show for room creator... and perhaps moderator
+      .xmark-icon-container(@click.stop='')
+        font-awesome-icon.row-item.kill-button(icon='fa-regular fa-xmark-circle' @click.stop="onXmarkClicked")
 </template>
 
 <script>
-import { getDatabase, ref, onChildAdded, onChildChanged, onChildRemoved } from 'firebase/database'
+import { getDatabase, ref, onChildAdded, onChildChanged, onChildRemoved, remove } from 'firebase/database'
 
 export default {
   name: 'Lobby',
@@ -42,6 +47,17 @@ export default {
     onChildRemoved(lobbyUsersRef, (data) => {
       this.lobbyRooms = this.lobbyRooms.filter((room) => data.val().name !== room.name)
     })
+  },
+  methods: {
+    onRowClicked () {
+      // TODO:
+      console.log('row clicked')
+    },
+    onXmarkClicked (e) {
+      const playerName = e.target.closest('.row').firstChild.innerText
+      // console.log(playerName)
+      remove(ref(this.db, `/lobby/users/${playerName}`))
+    }
   }
 }
 </script>
@@ -60,6 +76,11 @@ export default {
   overflow-y: auto;
 
   background-color: $transparent-gray;
+
+  .xmark-icon-container {
+    padding-inline: 15px;
+    cursor: default;
+  }
 }
 #header-row {
   display: flex;
@@ -72,6 +93,11 @@ export default {
 }
 #header-row .heading {
   flex: 1;
+
+  &.kill-button-header {
+    flex: 0;
+    visibility: hidden;
+  }
 }
 
 .row {
@@ -89,5 +115,11 @@ export default {
 }
 .row .row-item {
   flex: 1;
+
+  &.kill-button {
+    flex: 0;
+
+    cursor: pointer;
+  }
 }
 </style>

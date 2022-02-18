@@ -11,15 +11,13 @@
           #rated-button.mode-button(:class='{selected: isRated}', @click='onRatedButtonClick') rated
         #action-section
           #cancel-button.action-section-button(@click='$modal.hide("create-game")') cancel
-          #confirm-button.action-section-button(@click='joinLobby') join lobby
+          #confirm-button.action-section-button(@click='onJoinLobbyClicked') join lobby
   .action-button PLAY WITH A FRIEND
   .action-button PLAY WITH THE COMPUTER
 </template>
 
 <script>
 import { getDatabase, ref, set } from 'firebase/database'
-
-import { nanoid } from 'nanoid'
 
 export default {
   name: 'ActionButtons',
@@ -45,13 +43,13 @@ export default {
       if (!this.isRated) this.isRated = true
     },
     // TODO: determine when, in which exact cases, to remove the room from the lobby in the rtdb
-    // on logout
+    // on logout (only applicable to registered users)
     // on join game
     // on cancelling game (clicking 'x')
     // on leaving home (show an alert)
-    joinLobby () {
-      let name = 'anon-' + nanoid(5)
-      let rating = 1200
+    onJoinLobbyClicked () {
+      let name
+      let rating
       const user = this.$store.state.user
       // console.log(user)
       if (user) {

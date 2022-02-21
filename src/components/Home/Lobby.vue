@@ -13,9 +13,8 @@
       .row-item.rating {{room.rating}}
       .row-item.time {{room.time}}
       .row-item.mode {{room.isRated ? 'Rated': 'Casual'}}
-      //- TODO: only show for room creator... and perhaps moderator
       .xmark-icon-container(@click.stop='')
-        font-awesome-icon.row-item.kill-button(icon='fa-regular fa-xmark-circle' @click.stop="onXmarkClicked")
+        font-awesome-icon.row-item.kill-button(:class='{hidden: !isMyRoom(room)}' icon='fa-regular fa-xmark-circle' @click.stop="onXmarkClicked")
 </template>
 
 <script>
@@ -53,10 +52,19 @@ export default {
       // TODO:
       console.log('row clicked')
     },
+    isMyRoom (room) {
+      // console.log(this.$store.state.user?.name)
+      return room.name === this.$store.state.user?.name
+    },
     onXmarkClicked (e) {
+      // if somehow clicked, do not allow users to delete others' rooms
+      if (!this.isMyRoom) return
+
       const playerName = e.target.closest('.row').firstChild.innerText
       // console.log(playerName)
-      remove(ref(this.db, `/lobby/users/${playerName}`))
+      remove(ref(this.db, `/lobby/users/${playerName}`)).then(() => {
+        this.$store.commit('setHasOpenLobbyGame', false)
+      })
     }
   }
 }
@@ -120,6 +128,10 @@ export default {
     flex: 0;
 
     cursor: pointer;
+  }
+
+  &.hidden {
+    visibility: hidden;
   }
 }
 </style>

@@ -5,11 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: null
+    user: null,
+    hasOpenLobbyGame: false
   },
   mutations: {
     setUser (state, user) {
       state.user = user
+    },
+    setHasOpenLobbyGame (state, hasOpenLobbyGame) {
+      state.hasOpenLobbyGame = hasOpenLobbyGame
     }
   },
   actions: {

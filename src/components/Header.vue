@@ -2,9 +2,9 @@
 #header
   nav#header-nav
     router-link#logo(to='/') tug of word
-    .header-link PLAY
+    router-link.header-link(to='/') PLAY
     .header-link RULES
-    .header-link ABOUT
+    router-link.header-link(to='/about') ABOUT
     #anon-header-container(v-if='(user && user.isAnonymous && user.displayName)')
       #anon-name Temporary ID: {{user.displayName}}
       //- TODO: autofill name in register vuew with the anon display-name
@@ -256,6 +256,9 @@ export default {
 }
 #header-nav .header-link {
   font-weight: 300;
+
+  color: $white;
+  text-decoration: none;
 }
 #header-nav .header-link:hover {
   color: $accent;

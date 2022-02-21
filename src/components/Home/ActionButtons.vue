@@ -5,7 +5,7 @@
       .modal-content
         #time-control
           #time-control-label seconds per side
-          input#time-control-input(v-model='secondsPerSide' type="number", min="5", max="30")
+          input#time-control-input(v-model='secondsPerSide' @change='onTimeInputChanged' type="number", :min="minTime", :max="maxTime")
         #choose-mode
           #casual-button.mode-button(:class='{selected: !isRated}', @click='onCasualButtonClick') casual
           #rated-button.mode-button(:class='{selected: isRated}', @click='onRatedButtonClick') rated
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { getDatabase, ref, set } from 'firebase/database'
+import { getDatabase, ref, remove, set } from 'firebase/database'
 
 export default {
   name: 'ActionButtons',
@@ -25,16 +25,37 @@ export default {
     return {
       db: null,
 
+      minTime: 5,
+      maxTime: 30,
+
       secondsPerSide: 20,
-      isRated: true
+      isRated: true,
+
+      // listeners
+      handleBeforeUnload: null
     }
   },
   created () {
     this.db = getDatabase()
   },
+  destroyed () {
+    // remove open room (if existent) from lobby
+    if (this.$store.state.hasOpenLobbyGame) {
+      remove(ref(this.db, `lobby/users/${this.$store.state.user.name}`))
+    }
+
+    // remove listeners
+    if (this.handleBeforeUnload) {
+      window.removeEventListener('beforeunload', this.handleBeforeUnload)
+    }
+  },
   methods: {
     createGame () {
       this.$modal.show('create-game')
+    },
+    onTimeInputChanged () {
+      if (this.secondsPerSide < this.minTime) this.secondsPerSide = 5
+      if (this.secondsPerSide > this.maxTime) this.secondsPerSide = 30
     },
     onCasualButtonClick () {
       if (this.isRated) this.isRated = false
@@ -42,11 +63,13 @@ export default {
     onRatedButtonClick () {
       if (!this.isRated) this.isRated = true
     },
-    // TODO: determine when, in which exact cases, to remove the room from the lobby in the rtdb
-    // on logout (only applicable to registered users)
-    // on join game
-    // on cancelling game (clicking 'x')
-    // on leaving home (show an alert)
+    // determine when, in which exact cases, to remove the room from the lobby in the rtdb
+    // TODO: on join game
+    // HANDLED! on logout (only applicable to registered users)
+    // HANDLED! on login (only applicable to anon users)
+    // HANDLED! on cancelling game (clicking 'x')
+    // TODO: on leaving home (show an alert)
+    // HANDLED! on closing window
     onJoinLobbyClicked () {
       let name
       let rating
@@ -64,6 +87,14 @@ export default {
         isRated: this.isRated
       }).then(() => {
         this.$modal.hide('create-game')
+
+        this.$store.commit('setHasOpenLobbyGame', true)
+
+        // set event listener to avoid having zombie rooms
+        this.handleBeforeUnload = (e) => {
+          remove(ref(this.db, `lobby/users/${name}`))
+        }
+        window.addEventListener('beforeunload', this.handleBeforeUnload)
       })
     }
   }
@@ -112,9 +143,14 @@ export default {
   justify-content: center;
   align-items: center;
   gap: 2rem;
+
+  #time-control-input {
+    width: 5rem;
+
+    font-size: $large;
+
+  }
 }
-// #time-control-input {
-// }
 #choose-mode {
   flex: 1.5;
 
@@ -161,6 +197,7 @@ export default {
 
   padding-block: 0.5rem;
 
+  text-shadow: 1px 1px black;
   cursor: pointer;
 }
 #action-section #cancel-button {

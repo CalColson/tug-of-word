@@ -6,7 +6,7 @@
 
 <script>
 import { getAuth, onAuthStateChanged, signInAnonymously, updateProfile } from 'firebase/auth'
-import { getDatabase, ref, query, orderByKey, equalTo, onValue, set } from 'firebase/database'
+import { getDatabase, ref, query, orderByKey, equalTo, onValue, set, remove } from 'firebase/database'
 
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 
@@ -39,6 +39,18 @@ export default {
       if (user && user.displayName) {
         // code for both registered and anonymous users
 
+        // if the there is a previous user (i.e. signing in from anon account)
+        if (this.$store.state.user) {
+          // remove any open lobby games
+          if (this.$store.state.hasOpenLobbyGame) {
+            remove(ref(this.db, `lobby/users/${this.$store.state.user.name}`))
+            this.$store.commit('setHasOpenLobbyGame', false)
+          }
+
+          // TODO: remove anonymous user from database
+          // TODO: remove anonymous user from auth
+        }
+
         // set store for user
         const path = user.isAnonymous ? '/anonymousUsers' : 'registeredUsers'
         const usersQuery = query(ref(this.db, path),
@@ -57,6 +69,19 @@ export default {
           }
         }, { onlyOnce: true })
       } else if (!user) {
+        // if user has just logged out, the user will still be in the store
+        if (this.$store.state.user) {
+          // remove any open lobby games
+          if (this.$store.state.hasOpenLobbyGame) {
+            remove(ref(this.db, `lobby/users/${this.$store.state.user.name}`)).then(() => {
+              this.$store.commit('setHasOpenLobbyGame', false)
+            })
+          }
+
+          // remove user from state, as it is no longer valid
+          this.$store.commit('setUser', null)
+        }
+
         // if there is no user, log-in anonymously
         const auth = getAuth()
         signInAnonymously(auth).then((userCredential) => {

@@ -68,7 +68,7 @@ export default {
     // HANDLED! on logout (only applicable to registered users)
     // HANDLED! on login (only applicable to anon users)
     // HANDLED! on cancelling game (clicking 'x')
-    // TODO: on leaving home (show an alert)
+    // HANDLED! on leaving home
     // HANDLED! on closing window
     onJoinLobbyClicked () {
       let name

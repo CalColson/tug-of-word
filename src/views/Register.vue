@@ -97,22 +97,22 @@ export default {
               displayName: this.cleanUserInfo.userName
             }).catch((err) => console.error(err))
 
-            // then create instance of the user in the rtdb
-            const db = getDatabase()
-            set(ref(db, `registeredUsers/${this.cleanUserInfo.userName}`), {
+            const registeredUser = {
+              uid: userCredential.user.uid,
+              name: this.cleanUserInfo.userName,
               email: userCredential.user.email,
               rating: 1200
-            }).then(() => {
+            }
+            // then create instance of the user in the rtdb
+            const db = getDatabase()
+            set(ref(db, `registeredUsers/${this.cleanUserInfo.userName}`), registeredUser)
+              .then(() => {
               // lastly, set store user, because on initial creation of user, displayName is not yet updated (so it cannot be accessed in the onAuthStateChanged function in App.vue)
-              this.$store.commit('setUser', {
-                name: this.cleanUserInfo.userName,
-                email: userCredential.user.email,
-                rating: 1200
-              })
+                this.$store.commit('setUser', registeredUser)
 
-              // finally go back to home page
-              this.$router.push('/')
-            }).catch((err) => console.log(err))
+                // finally go back to home page
+                this.$router.push('/')
+              }).catch((err) => console.log(err))
           }).catch((err) => {
             // console.log(err)
             if (err.code === 'auth/email-already-in-use') {

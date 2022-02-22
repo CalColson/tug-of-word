@@ -6,6 +6,9 @@ Ideas to implement (much) later:
 3. ramp up the speed over time so that games do not last forever
 4. create a play-through tutorial
 
+5. Delete inactive anonymous users from Auth if they have been inactive for a long time
+  - this is fairly indepth and will require maintaining user time-stamps (presumably for most recent activity) and uids in the database. Then with that info if the time-stamp is old enough, delete the user using firebase admin sdk
+
 Ideas to implement sooner:
 
 Ideas to implement today(ish):

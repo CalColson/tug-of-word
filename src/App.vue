@@ -27,28 +27,31 @@ export default {
     this.db = getDatabase()
 
     const auth = getAuth()
+    // TODO: overhaul this function!!! diagram out exactly what needs to be done when each kind of user logs in (3 kinds: no user, anonUser, registeredUser). Also note what happens on save, try to remove the errors of login occurring just through a hot-reload, not a full f5 page reload
     onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log(`${user.displayName} logged in`)
+      } else console.log('user logged out')
+
       // user data to pass into header props
       this.user = user
-
-      // if (user) {
-      //   console.log(`${user.email} logged in`)
-      // } else console.log('user logged out')
 
       // if user has just registered, there will be no displayName set yet. In this case, the store's user is set in Register.vue after account creation, or, if anonymous, in the if statement below
       if (user && user.displayName) {
         // code for both registered and anonymous users
 
-        // if the there is a previous user (i.e. signing in from anon account)
-        if (this.$store.state.user) {
+        // if there is a previous user (i.e. signing in from anon account)
+        if (this.$store.state.user &&
+        // This second check is used to make sure it isn't just reran on save
+          this.$store.state.user.uid !== user.uid) {
           // remove any open lobby games
           if (this.$store.state.hasOpenLobbyGame) {
             remove(ref(this.db, `lobby/users/${this.$store.state.user.name}`))
             this.$store.commit('setHasOpenLobbyGame', false)
           }
 
-          // TODO: remove anonymous user from database
-          // TODO: remove anonymous user from auth
+          remove(ref(this.db, `anonymousUsers/${this.$store.state.user.name}`))
+          fetch(`http://localhost:3000/user/${this.$store.state.user.uid}`, { method: 'DELETE' })
         }
 
         // set store for user
@@ -58,10 +61,7 @@ export default {
 
         onValue(usersQuery, (snapshot) => {
           if (snapshot.val()) {
-            this.$store.commit('setUser', {
-              ...snapshot.val()[user.displayName],
-              name: user.displayName
-            })
+            this.$store.commit('setUser', snapshot.val()[user.displayName])
             // console.log(this.$store.state.user)
           } else {
             console.error('registered user could not be found in database')
@@ -85,21 +85,21 @@ export default {
         // if there is no user, log-in anonymously
         const auth = getAuth()
         signInAnonymously(auth).then((userCredential) => {
+          // console.log(userCredential)
+
           const randomName = uniqueNamesGenerator({ dictionaries: [adjectives, animals] })
           // console.log(randomName)
 
           updateProfile(userCredential.user, { displayName: randomName })
 
           // TODO: could result in collisions, but we'll worry about this later
-          set(ref(this.db, `/anonymousUsers/${randomName}`), {
+          const anonUser = {
+            uid: userCredential.user.uid,
             name: randomName,
             rating: 1200
-          })
-
-          this.$store.commit('setUser', {
-            name: randomName,
-            rating: 1200
-          })
+          }
+          set(ref(this.db, `/anonymousUsers/${randomName}`), anonUser)
+          this.$store.commit('setUser', anonUser)
         })
         // console.log(this.$store.state.user)
       } else {

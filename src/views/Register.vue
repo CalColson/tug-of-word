@@ -8,7 +8,7 @@
       div
         label(for="userNameInput") User name:
         span.error-message {{userNameErrorMessage}}
-      input#userNameInput(:class='{invalid: !isUserNameValid}' v-model='userName' @keyup='updateValidity' type="text" autofocus)
+      input#userNameInput(:class='{invalid: !isUserNameValid}' v-model='userName' @keyup='updateValidity' type="text")
     .input-group
       div
         label(for="passwordInput") Password:

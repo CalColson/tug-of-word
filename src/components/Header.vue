@@ -19,7 +19,7 @@
             label(for="userNameOrEmailInput") User name or email:
             span.sign-in-error-message {{userNameOrEmailErrorMessage}}
             br
-            input#userNameOrEmailInput(:class='{invalid: !isNameOrEmailValid}' v-model='userNameOrEmail' @keyup='updateValidity' type="text" autofocus)
+            input#userNameOrEmailInput(:class='{invalid: !isNameOrEmailValid}' v-model='userNameOrEmail' @keyup='updateValidity' type="text")
           .input-group
             label(for="passwordInput") Password:
             span.sign-in-error-message {{passwordErrorMessage}}

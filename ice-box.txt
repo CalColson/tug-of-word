@@ -11,5 +11,7 @@ Ideas to implement (much) later:
 
 Ideas to implement sooner:
 
+1. programatically focus the first inputs for the sign in and registration forms on load (autofocus is not the way)
+
 Ideas to implement today(ish):
 1. fun anonymous user names -- done!
